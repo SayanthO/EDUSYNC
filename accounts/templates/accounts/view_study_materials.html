@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Study Materials</h2>
+<ul>
+  {% for material in materials %}
+    <li>
+      <a href="{{ material.file.url }}" download>{{ material.title }}</a>
+      (Uploaded by {{ material.uploaded_by.username }})
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

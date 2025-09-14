@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySchool - Home</title>
+    <style>
+        /* Reset and fonts */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+        }
+
+        /* Center content */
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            color: #1e90ff;
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 5px;
+            font-size: 1rem;
+            color: white;
+            background-color: #1e90ff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0f75d1;
+        }
+
+        /* Optional small footer */
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to MySchool</h1>
+        <p>Your gateway to learning, teaching, and managing school activities.</p>
+        <div>
+            <a href="{% url 'signup' %}" class="btn">Signup</a>
+            <a href="{% url 'login' %}" class="btn">Login</a>
+        </div>
+        <div class="footer">
+            &copy; 2025 MySchool. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

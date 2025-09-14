@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MySchool - Login</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to right, #1e90ff, #63b3ed);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-card {
+        background: #fff;
+        padding: 40px 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+    }
+
+    .login-card h2 {
+        margin-bottom: 25px;
+        color: #1e90ff;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    form input {
+        padding: 12px 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+    }
+
+    .btn-login {
+        padding: 12px;
+        margin-top: 15px;
+        background-color: #1e90ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-login:hover {
+        background-color: #0f75d1;
+    }
+
+    .signup-link {
+        margin-top: 15px;
+        font-size: 0.9rem;
+    }
+
+    .signup-link a {
+        color: #1e90ff;
+        text-decoration: none;
+    }
+
+    .signup-link a:hover {
+        text-decoration: underline;
+    }
+
+    .errorlist {
+        color: red;
+        margin: 5px 0;
+        list-style: none;
+        padding: 0;
+        font-size: 0.9rem;
+    }
+
+    input.error {
+        border-color: red;
+    }
+</style>
+</head>
+<body>
+<div class="login-card">
+    <h2>Login to MySchool</h2>
+
+    <!-- Display Django messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color:red; text-align:left;">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- Username Field -->
+        <input type="text" name="{{ form.username.html_name }}" value="{{ form.username.value }}" placeholder="Username" class="{% if form.username.errors %}error{% endif %}" required>
+        {% if form.username.errors %}
+            <ul class="errorlist">
+                {% for error in form.username.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- Password Field -->
+        <input type="password" name="{{ form.password.html_name }}" placeholder="Password" class="{% if form.password.errors %}error{% endif %}" required>
+        {% if form.password.errors %}
+            <ul class="errorlist">
+                {% for error in form.password.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <button type="submit" class="btn-login">Login</button>
+    </form>
+
+
+    <div class="signup-link">
+        Don't have an account? <a href="{% url 'signup' %}">Sign up</a>
+    </div>
+</div>
+
+</body>
+</html>

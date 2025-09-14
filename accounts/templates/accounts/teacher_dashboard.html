@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Teacher Dashboard</h2>
+<p>Welcome, <strong>{{ user.username }}</strong></p>
+
+<h3>Class Timetable</h3>
+<div style="background:#fafafa;padding:12px;border-radius:6px;border:1px solid #eee;">
+    <img src="{% static 'images/timetable.png' %}" alt="Timetable" style="width:100%;border-radius:6px;">
+</div>
+
+<hr>
+<h3>Attendance</h3>
+<p><a href="{% url 'view_attendance' %}">View Class Attendance</a></p>
+
+<hr>
+<h3>Study Materials</h3>
+<p><a href="{% url 'upload_study_material' %}">Upload Material</a> | <a href="{% url 'view_study_materials' %}">All Materials</a></p>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>HOD Dashboard</h2>
+<p>Welcome, <strong>{{ user.username }}</strong> — <em>{{ user.role|capfirst }}</em></p>
+
+<div style="display:flex;gap:24px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:320px">
+        <div style="background:#fafafa;padding:16px;border-radius:8px;border:1px solid #eef2ff;">
+            <h3 style="margin-top:0">Class Timetable</h3>
+            <p>The current timetable (HOD can update):</p>
+            <img src="{% static 'static/images/timetable.png' %}" alt="Timetable">
+            <div style="margin-top:12px">
+                <a href="{% url 'edit_timetable' %}" style="display:inline-block;padding:10px 14px;background:#1e3a8a;color:#fff;border-radius:6px;text-decoration:none;">
+                    Edit / Upload Timetable
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div style="flex:1;min-width:300px">
+        <div style="background:#fff6f6;padding:16px;border-radius:8px;border:1px solid #ffecec;">
+            <h3 style="margin-top:0">Quick Actions</h3>
+            <ul>
+                <li><a href="{% url 'view_attendance' %}">View Attendance</a></li>
+                <li><a href="{% url 'attendance_report' %}">Attendance Reports</a></li>
+                <li><a href="{% url 'view_study_materials' %}">Manage Study Materials</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

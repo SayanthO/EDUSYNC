@@ -1,0 +1,11 @@
+{% load static %}
+{% extends "accounts/base.html" %}
+
+{% block content %}
+<h2>{{ user.role|capfirst }} Dashboard</h2>
+<p>Welcome, {{ user.username }}!</p>
+<hr>
+<h3>Class Timetable</h3>
+<img src="{% static 'images/timetable.png' %}" alt="Timetable" width="100%">
+
+{% endblock %}
