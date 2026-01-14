@@ -1,162 +1,139 @@
-import os
-from django.conf import settings
-from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
+from .models import CustomUser
 
-User = get_user_model()  # Custom user if defined
-
-# ---------------- HOME & AUTH ----------------
-
-def home(request):
-    return render(request, 'accounts/home.html')
-
-
-def signup_view(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        email = request.POST.get("email", "").strip()
-        role = request.POST.get("role")
-
-        if User.objects.filter(email=email).exists():
-            messages.error(request, "Email already exists.")
-            return redirect("signup")
-
-        user = User.objects.create_user(username=username, email=email, password=password)
-        user.role = role
-        user.save()
-
-       # ...existing code...
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            # Role-based redirection
-            role = getattr(user, 'role', None)
-            if role == 'student':
-                return redirect('student_dashboard')
-            elif role == 'teacher':
-                return redirect('teacher_dashboard')
-            elif role == 'hod':
-                return redirect('hod_dashboard')
-            elif role == 'parent':
-                return redirect('parent_dashboard')
-            else:
-                return redirect('home')
-        else:
-            messages.success(request, "Account created successfully!")
-            return redirect("login")
-# ...existing code...
-
-    return render(request, "accounts/signup.html")
+def welcome_page(request):
+    return render(request, 'accounts/welcome.html')
 
 
 def login_view(request):
     if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
+        reg_no = request.POST.get("registernumber")
+        password = request.POST.get("password")
+
+        # authenticate still uses username internally
+        user = authenticate(request, username=reg_no, password=password)
+
+        if user is not None:
             login(request, user)
 
-            # Role-based redirection
-            role = getattr(user, 'role', None)
-            if role == 'student':
-                return redirect('student_dashboard')
-            elif role == 'teacher':
-                return redirect('teacher_dashboard')
-            elif role == 'hod':
-                return redirect('hod_dashboard')
-            elif role == 'parent':
-                return redirect('parent_dashboard')
+            # 🔥 ROLE BASED REDIRECT
+            if user.role == "student":
+                return redirect("student_dashboard")
+            elif user.role == "teacher":
+                return redirect("teacher_dashboard")
+            elif user.role == "hod":
+                return redirect("hod_dashboard")
             else:
-                return redirect('home')
+                messages.error(request, "Role not assigned")
         else:
-            messages.error(request, "Invalid username or password")
-    else:
-        form = AuthenticationForm()
-    return render(request, "accounts/login.html", {"form": form})
+            messages.error(request, "Invalid Register Number or Password")
 
-
-@login_required
+    return render(request, "accounts/login.html")
 def logout_view(request):
     logout(request)
-    return redirect('home')
+    return redirect('login')
 
+def signup_role(request):
+    return render(request, 'accounts/signup_role.html')
 
-# ---------------- DASHBOARDS ----------------
+def signup_student(request):
+    if request.method == "POST":
+        full_name = request.POST['full_name']
+        reg_no = request.POST['reg_no']
+        email = request.POST['email']
+        password = request.POST['password']
+        confirm = request.POST['confirm']
 
-@login_required
+        if password != confirm:
+            messages.error(request, "Passwords do not match!")
+            return redirect('signup_student')
+
+        if CustomUser.objects.filter(username=reg_no).exists():
+            messages.error(request, "Register number already exists!")
+            return redirect('signup_student')
+
+        user = CustomUser.objects.create_user(
+            username=reg_no,
+            first_name=full_name,
+            email=email,
+            password=password,
+            role='student',
+            reg_no=reg_no
+        )
+        login(request, user)
+        return redirect('student_dashboard')
+
+    return render(request, 'accounts/signup_student.html')
+
+def signup_teacher(request):
+    if request.method == "POST":
+        full_name = request.POST['full_name']
+        staff_id = request.POST['staff_id']
+        email = request.POST['email']
+        password = request.POST['password']
+        confirm = request.POST['confirm']
+
+        if password != confirm:
+            messages.error(request, "Passwords do not match!")
+            return redirect('signup_teacher')
+
+        if CustomUser.objects.filter(username=staff_id).exists():
+            messages.error(request, "Staff ID already exists!")
+            return redirect('signup_teacher')
+
+        user = CustomUser.objects.create_user(
+            username=staff_id,
+            first_name=full_name,
+            email=email,
+            password=password,
+            role='teacher',
+            staff_id=staff_id
+        )
+        messages.success(request, "Teacher account created!")
+        return redirect('login')
+
+    return render(request, 'accounts/signup_teacher.html')
+
+def signup_hod(request):
+    if request.method == "POST":
+        full_name = request.POST['full_name']
+        hod_id = request.POST['hod_id']
+        email = request.POST['email']
+        password = request.POST['password']
+        confirm = request.POST['confirm']
+
+        if password != confirm:
+            messages.error(request, "Passwords do not match!")
+            return redirect('signup_hod')
+
+        if CustomUser.objects.filter(username=hod_id).exists():
+            messages.error(request, "HOD ID already exists!")
+            return redirect('signup_hod')
+
+        user = CustomUser.objects.create_user(
+            username=hod_id,
+            first_name=full_name,
+            email=email,
+            password=password,
+            role='hod',
+            staff_id=hod_id
+        )
+        messages.success(request, "HOD account created!")
+        return redirect('login')
+
+    return render(request, 'accounts/signup_hod.html')
+
+@login_required(login_url="login")
 def student_dashboard(request):
-    return render(request, 'accounts/student_dashboard.html')
+    return render(request, "accounts/student_dashboard.html")
 
-
-@login_required
+@login_required(login_url="login")
 def teacher_dashboard(request):
-    return render(request, 'accounts/teacher_dashboard.html')
-
-
-@login_required
-def parent_dashboard(request):
-    return render(request, 'accounts/parent_dashboard.html')
-
+    return render(request, "accounts/teacher_dashboard.html")
 
 @login_required
 def hod_dashboard(request):
     return render(request, 'accounts/hod_dashboard.html')
-
-
-# ---------------- ATTENDANCE ----------------
-
-@login_required
-def mark_attendance(request):
-    return render(request, 'accounts/mark_attendance.html')
-
-
-@login_required
-def view_attendance(request):
-    return render(request, 'accounts/view_attendance.html')
-
-
-@login_required
-def attendance_report(request):
-    return render(request, 'accounts/attendance_report.html')
-
-
-# ---------------- STUDY MATERIALS ----------------
-
-@login_required
-def upload_study_material(request):
-    return render(request, 'accounts/upload_study_material.html')
-
-
-@login_required
-def view_study_materials(request):
-    return render(request, 'accounts/view_study_materials.html')
-
-
-# ---------------- TIMETABLE ----------------
-
-@login_required
-def edit_timetable(request):
-    if getattr(request.user, "role", None) != 'hod':
-        messages.error(request, "You are not authorized to access this page.")
-        return redirect('home')
-
-    save_dir = os.path.join(settings.MEDIA_ROOT, 'timetables')
-    os.makedirs(save_dir, exist_ok=True)
-    fs = FileSystemStorage(location=save_dir)
-
-    timetable_url = None
-    if os.path.exists(os.path.join(save_dir, 'timetable.png')):
-        timetable_url = settings.MEDIA_URL + 'timetables/timetable.png'
-
-    if request.method == 'POST' and request.FILES.get('timetable'):
-        timetable_file = request.FILES['timetable']
-        fs.save('timetable.png', timetable_file)
-        messages.success(request, "✅ Timetable updated successfully!")
-        return redirect('hod_dashboard')
-
-    return render(request, 'accounts/edit_timetable.html', {'timetable_url': timetable_url})

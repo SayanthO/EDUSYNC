@@ -1,133 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MySchool - Login</title>
-<style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(to right, #1e90ff, #63b3ed);
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MySchool Portal</title>
 
-    .login-card {
-        background: #fff;
-        padding: 40px 30px;
-        border-radius: 10px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        width: 100%;
-        max-width: 400px;
-        text-align: center;
-    }
+    <style>
+        body {
+            margin: 0;
+            font-family: "Poppins", Arial, sans-serif;
+            background: linear-gradient(135deg, #4f46e5, #6366f1, #818cf8);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    .login-card h2 {
-        margin-bottom: 25px;
-        color: #1e90ff;
-    }
+        .login-container {
+            width: 380px;
+            padding: 40px 35px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+            text-align: center;
+            color: white;
+        }
 
-    form {
-        display: flex;
-        flex-direction: column;
-    }
+        h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
 
-    form input {
-        padding: 12px 15px;
-        margin: 10px 0;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        font-size: 1rem;
-    }
+        p.subtitle {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-bottom: 25px;
+        }
 
-    .btn-login {
-        padding: 12px;
-        margin-top: 15px;
-        background-color: #1e90ff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
+        input {
+            width: 100%;
+            padding: 13px;
+            border-radius: 8px;
+            border: none;
+            margin: 10px 0;
+            outline: none;
+            font-size: 15px;
+        }
 
-    .btn-login:hover {
-        background-color: #0f75d1;
-    }
+        input:focus {
+            border: 2px solid #0bdff2ff;
+        }
 
-    .signup-link {
-        margin-top: 15px;
-        font-size: 0.9rem;
-    }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #575a63ff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-size: 16px;
+            margin-top: 8px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
 
-    .signup-link a {
-        color: #1e90ff;
-        text-decoration: none;
-    }
+        button:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
 
-    .signup-link a:hover {
-        text-decoration: underline;
-    }
+        .messages {
+            background: rgba(255, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
 
-    .errorlist {
-        color: red;
-        margin: 5px 0;
-        list-style: none;
-        padding: 0;
-        font-size: 0.9rem;
-    }
+        a {
+            color: #bfdbfe;
+            text-decoration: none;
+        }
 
-    input.error {
-        border-color: red;
-    }
-</style>
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-text {
+            margin-top: 18px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
 </head>
-<body>
-<div class="login-card">
-    <h2>Login to MySchool</h2>
 
-    <!-- Display Django messages -->
+<body>
+
+<div class="login-container">
+    <h2>MySchool Login</h2>
+    <p class="subtitle">Enter your credentials to access your dashboard</p>
+
     {% if messages %}
-        {% for message in messages %}
-            <p style="color:red; text-align:left;">{{ message }}</p>
-        {% endfor %}
+        <div class="messages">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
     {% endif %}
 
-    <form method="POST">
-        {% csrf_token %}
-
-        <!-- Username Field -->
-        <input type="text" name="{{ form.username.html_name }}" value="{{ form.username.value }}" placeholder="Username" class="{% if form.username.errors %}error{% endif %}" required>
-        {% if form.username.errors %}
-            <ul class="errorlist">
-                {% for error in form.username.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
-        <!-- Password Field -->
-        <input type="password" name="{{ form.password.html_name }}" placeholder="Password" class="{% if form.password.errors %}error{% endif %}" required>
-        {% if form.password.errors %}
-            <ul class="errorlist">
-                {% for error in form.password.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
-        <button type="submit" class="btn-login">Login</button>
-    </form>
+ <form method="POST">
+    {% csrf_token %}
+   <input type="text" name="registernumber" placeholder="Register Number" required>
+   <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Login</button>
+ </form>
 
 
-    <div class="signup-link">
-        Don't have an account? <a href="{% url 'signup' %}">Sign up</a>
-    </div>
+    <p class="footer-text">
+        Don't have an account?
+         <a href="{% url 'signup_role' %}">Create one</a>
+    </p>
 </div>
 
 </body>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - MySchool</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6C63FF, #3E3A9F);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: fadeIn 1.2s ease forwards, floatContainer 6s ease-in-out infinite;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes floatContainer {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            animation: fadeInText 1.5s ease forwards;
+        }
+
+        @keyframes fadeInText {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            margin: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            transition: 0.3s;
+            font-weight: bold;
+            transform: scale(1);
+        }
+
+        .btn-login {
+            background: #00a2ffff;
+        }
+
+        .btn-login:hover {
+            background: #009AC7;
+            transform: scale(1.1);
+        }
+
+        .btn-signup {
+            background: #34D399;
+        }
+
+        .btn-signup:hover {
+            background: #22B07F;
+            transform: scale(1.1);
+        }
+
+        /* Add a subtle button fade-in */
+        .btn {
+            opacity: 0;
+            animation: fadeInBtn 2s ease forwards;
+        }
+
+        @keyframes fadeInBtn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Stagger button animation */
+        .btn-login { animation-delay: 2s; }
+        .btn-signup { animation-delay: 2.3s; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Welcome to MySchool</h1>
+
+        <a href="{% url 'login' %}" class="btn btn-login">Login</a>
+        <a href="{% url 'signup_role' %}" class="btn btn-signup">Signup</a>
+    </div>
+
+</body>
+</html>

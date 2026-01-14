@@ -1,16 +1,91 @@
-{% extends "base.html" %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
 
-{% block content %}
-<h2>Student Dashboard</h2>
-<p>Welcome, <strong>{{ user.username }}</strong></p>
+        /* Sidebar */
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            background: #4f46e5;
+            color: white;
+            position: fixed;
+            padding-top: 20px;
+        }
 
-<h3>Class Timetable</h3>
-<div style="background:#fafafa;padding:12px;border-radius:6px;border:1px solid #eee;">
-    <img src="{% static 'images/timetable.png' %}" alt="Timetable" style="width:100%;border-radius:6px;">
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 15px 20px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: #4338ca;
+        }
+
+        /* Main content */
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #1f2937;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Student Panel</h2>
+    <a href="#">Dashboard</a>
+    <a href="#">Profile</a>
+    <a href="#">Courses</a>
+    <a href="#">Assignments</a>
+    <a href="#">Logout</a>
 </div>
 
-<hr>
-<h3>Attendance</h3>
-<p><a href="{% url 'mark_attendance' %}">Mark Attendance</a> | <a href="{% url 'view_attendance' %}">View My Records</a></p>
-{% endblock %}
+<div class="main">
+    <h1>Welcome, {{ user.username }}</h1>
+
+    <div class="card">
+        <h3>Notifications</h3>
+        <p>No new notifications</p>
+    </div>
+
+    <div class="card">
+        <h3>Courses Enrolled</h3>
+        <ul>
+            <li>Mathematics</li>
+            <li>Computer Science</li>
+            <li>Physics</li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

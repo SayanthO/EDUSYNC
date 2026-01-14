@@ -3,127 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup - MySchool Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Signup - MySchool</title>
     <style>
         body {
             margin: 0;
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(120deg, #3b82f6, #1e40af);
-            height: 100vh;
             display: flex;
+            height: 100vh;
             justify-content: center;
             align-items: center;
+            background: #eef2ff;
+            font-family: Arial;
         }
         .signup-card {
-            background: #ffffff;
-            width: 450px;
-            padding: 35px 30px;
-            border-radius: 15px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+            width: 420px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        }
+        h2 {
             text-align: center;
-        }
-        .signup-card h2 {
-            font-size: 26px;
-            font-weight: 600;
             color: #1e3a8a;
-            margin-bottom: 25px;
-        }
-        .signup-card form input,
-        .signup-card form select {
-            width: 100%;
-            padding: 12px 15px;
             margin-bottom: 15px;
-            border-radius: 8px;
-            border: 1px solid #d1d5db;
-            font-size: 15px;
         }
-        .signup-card form input:focus,
-        .signup-card form select:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 6px rgba(59,130,246,0.3);
-            outline: none;
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 12px;
         }
-        .signup-card form button {
+        input, select {
             width: 100%;
-            padding: 13px;
-            border: none;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
             background: #1e3a8a;
             color: white;
+            border: none;
             font-size: 16px;
-            font-weight: 500;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background 0.3s;
         }
-        .signup-card form button:hover {
+        button:hover {
             background: #3b82f6;
         }
-        .signup-card p {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #6b7280;
-        }
-        .signup-card a {
-            color: #1e3a8a;
-            font-weight: 500;
-            text-decoration: none;
-        }
-        .signup-card a:hover {
-            text-decoration: underline;
-        }
-        /* Messages */
         .messages {
-            margin-bottom: 15px;
-            text-align: left;
-            padding-left: 0;
-        }
-        .messages li {
-            list-style: none;
-            padding: 8px 12px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        .messages li.error {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-        .messages li.success {
-            background: #dcfce7;
-            color: #166534;
+            color: red;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="signup-card">
-        <h2>Create Your MySchool Account</h2>
 
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li class="{{ message.tags }}">{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+<div class="signup-card">
+    <h2>Create Account</h2>
 
-        <form method="POST">
-            {% csrf_token %}
-            <input type="text" name="username" placeholder="Enter Username" required>
-            <input type="email" name="email" placeholder="Enter Email" required>
-            <input type="password" name="password" placeholder="Enter Password" required>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
 
-            <select name="role" required>
-                <option value="">Select Role</option>
-                <option value="student">Student</option>
-                <option value="teacher">Teacher</option>
-                <option value="parent">Parent</option>
-                <option value="hod">HOD</option>
-            </select>
-            <button type="submit">Sign Up</button>
-        </form>
+    <form method="POST">
+        {% csrf_token %}
 
-        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
-    </div>
-</body>
-</html>
+        <label>User Type</label>
+        <select name="role" required>
+            <option value="">Select User Type</option>
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+            <option value="parent">Parent</option>
+        </select>
