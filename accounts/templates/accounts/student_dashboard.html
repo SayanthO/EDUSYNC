@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -105,7 +106,7 @@
     <a href="#" onclick="showTimetable()">Timetable</a>
     <a href="#" onclick="showAssignments()">Assignments</a>
     <a href="#" onclick="showNotifications()">Notifications</a>
-    <a href="#">Logout</a>
+    <a href="{% url 'logout' %}">Logout</a>
 </div>
 
 <div class="main">
@@ -115,12 +116,10 @@
         <h1>Welcome, {{ user.first_name }}</h1>
 
         <div class="card">
-            <h3>Courses Enrolled</h3>
-            <ul>
-                <li>Mathematics</li>
-                <li>Computer Science</li>
-                <li>Physics</li>
-            </ul>
+            <h3>Profile Info</h3>
+            <p>Name: {{ user.first_name }}</p>
+            <p>Register No: {{ user.reg_no }}</p>
+            <p>Class: {{ user_class }}</p>
         </div>
     </div>
 
@@ -141,51 +140,14 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for day, periods in timetable.items %}
                     <tr>
-                        <td><b>Monday</b></td>
-                        <td>Math</td>
-                        <td>CS</td>
-                        <td>Physics</td>
-                        <td>Free</td>
-                        <td>Lab</td>
-                        <td>Elective</td>
+                        <td><b>{{ day }}</b></td>
+                        {% for i in "123456" %}
+                        <td>{{ periods|get_item:i|default:"Free" }}</td>
+                        {% endfor %}
                     </tr>
-                    <tr>
-                        <td><b>Tuesday</b></td>
-                        <td>CS</td>
-                        <td>Physics</td>
-                        <td>Math</td>
-                        <td>Free</td>
-                        <td>Lab</td>
-                        <td>Elective</td>
-                    </tr>
-                    <tr>
-                        <td><b>Wednesday</b></td>
-                        <td>Physics</td>
-                        <td>Math</td>
-                        <td>CS</td>
-                        <td>Free</td>
-                        <td>Lab</td>
-                        <td>Elective</td>
-                    </tr>
-                    <tr>
-                        <td><b>Thursday</b></td>
-                        <td>Math</td>
-                        <td>CS</td>
-                        <td>Physics</td>
-                        <td>Free</td>
-                        <td>Lab</td>
-                        <td>Elective</td>
-                    </tr>
-                    <tr>
-                        <td><b>Friday</b></td>
-                        <td>CS</td>
-                        <td>Physics</td>
-                        <td>Math</td>
-                        <td>Free</td>
-                        <td>Lab</td>
-                        <td>Elective</td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -197,7 +159,7 @@
 
         <div class="card" style="text-align:center;">
             <h3>Download Assignment PDF</h3>
-            <button class="download-btn" onclick="downloadAssignment()">Download PDF</button>
+            <button class="download-btn">Download PDF</button>
         </div>
 
         <div class="card" style="text-align:center;">
@@ -213,7 +175,9 @@
         <h1>Notifications</h1>
         <div class="card" id="notificationCard">
             <ul id="notificationsList">
-                <li>Welcome to your dashboard!</li>
+                {% for note in notifications %}
+                    <li>{{ note }}</li>
+                {% endfor %}
             </ul>
         </div>
     </div>
@@ -249,11 +213,6 @@ function showNotifications() {
     document.getElementById("notificationsSection").style.display = "block";
 }
 
-function downloadAssignment() {
-    alert("Downloading assignment PDF...");
-    // TODO: Connect to backend to fetch the uploaded assignment PDF
-}
-
 function uploadAssignment() {
     const fileInput = document.getElementById("uploadAssignment");
     if(fileInput.files.length === 0){
@@ -268,8 +227,6 @@ function uploadAssignment() {
     const newNotification = document.createElement("li");
     newNotification.textContent = "You have successfully submitted: " + fileName;
     notificationsList.appendChild(newNotification);
-
-    // TODO: Connect to backend to save the uploaded assignment
 }
 </script>
 

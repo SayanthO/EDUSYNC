@@ -41,7 +41,7 @@
             width: 100%;
         }
 
-        input {
+        input, select {
             width: 80%;
             padding: 12px;
             border-radius: 8px;
@@ -52,13 +52,19 @@
             outline: none;
             transition: 0.3s;
             text-align: left;
+            appearance: none; /* remove default arrow styling for modern browsers */
         }
 
         input::placeholder {
             color: rgba(255,255,255,0.7);
         }
 
-        input:focus {
+        select option {
+            background-color: white; /* visible background for options */
+            color: #1f2937; /* dark text for readability */
+        }
+
+        input:focus, select:focus {
             background: rgba(255,255,255,0.35);
             border-color: #c7d2fe;
         }
@@ -109,6 +115,19 @@
 
         <div class="input-group">
             <input type="password" name="confirm" placeholder="Confirm Password" required>
+        </div>
+
+        <!-- Class Selection with visible options -->
+        <div class="input-group">
+            <select name="student_class" required>
+                <option value="">-- Select Class --</option>
+                <option value="CPS1">CPS1</option>
+                <option value="CPS2">CPS2</option>
+                <option value="CPS3">CPS3</option>
+                <option value="CPS4">CPS4</option>
+                <option value="CPS5">CPS5</option>
+                <option value="CPS6">CPS6</option>
+            </select>
         </div>
 
         <button type="submit">Create Account</button>

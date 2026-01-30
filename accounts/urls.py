@@ -12,4 +12,7 @@ urlpatterns = [
     path('dashboard/student/', views.student_dashboard, name='student_dashboard'),
     path('dashboard/teacher/', views.teacher_dashboard, name='teacher_dashboard'),
     path('dashboard/hod/', views.hod_dashboard, name='hod_dashboard'),
+    path('hod_dashboard/', views.hod_dashboard, name='hod_dashboard'),
+    path('hod_timetable_save/', views.hod_timetable_save, name='hod_timetable_save'),
+    path('student_dashboard/', views.student_dashboard, name='student_dashboard'),
 ]
