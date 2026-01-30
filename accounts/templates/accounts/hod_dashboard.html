@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOD Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            background: #4f46e5;
+            color: white;
+            position: fixed;
+            padding-top: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 15px 20px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: #4338ca;
+        }
+
+        /* Main content */
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        th {
+            background: #eef2ff;
+        }
+
+        h1 {
+            color: #1f2937;
+        }
+
+        .notification {
+            background-color: #eef2ff;
+            border-left: 5px solid #4f46e5;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .send-btn, .class-btn, .period-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4f46e5;
+            color: white;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .send-btn:hover, .class-btn:hover, .period-btn:hover {
+            background-color: #4338ca;
+        }
+
+        #classButtons {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>HOD Dashboard</h2>
+    <a href="#" onclick="showDashboard()">Dashboard</a>
+    <a href="#" onclick="showTimetable()">Timetable</a>
+    <a href="#" onclick="showNotifications()">Notifications</a>
+    <a href="#">Logout</a>
+</div>
+
+<div class="main">
+
+    <!-- DASHBOARD SECTION -->
+    <div id="dashboardSection">
+        <h1>Welcome, {{ user.first_name }}</h1>
+
+        <div class="card">
+            <h3>Department Overview</h3>
+            <p>Total Teachers: 10</p>
+            <p>Total Students: 120</p>
+            <p>Pending Tasks: 3</p>
+        </div>
+
+        <div class="card">
+            <h3>Quick Actions</h3>
+            <ul>
+                <li>Send notification to teachers</li>
+                <li>View teacher schedules</li>
+                <li>Monitor assignments submissions</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- TIMETABLE SECTION -->
+    <div id="timetableSection" style="display:none;">
+        <h1>Department Timetable</h1>
+
+        <!-- Select Class Button -->
+        <div class="card" style="text-align:center;">
+            <button class="send-btn" onclick="showClassButtons()">Select Class</button>
+        </div>
+
+        <!-- Class Buttons -->
+        <div id="classButtons" style="text-align:center; display:none;">
+            <button class="class-btn" onclick="showClassTimetable('CPS1')">CPS1</button>
+            <button class="class-btn" onclick="showClassTimetable('CPS2')">CPS2</button>
+            <button class="class-btn" onclick="showClassTimetable('CPS3')">CPS3</button>
+            <button class="class-btn" onclick="showClassTimetable('CPS4')">CPS4</button>
+            <button class="class-btn" onclick="showClassTimetable('CPS5')">CPS5</button>
+            <button class="class-btn" onclick="showClassTimetable('CPS6')">CPS6</button>
+        </div>
+
+        <!-- Timetable Table -->
+        <div id="timetableTable" style="display:none;">
+            <div class="card" id="timetableCard">
+                <h3 id="timetableTitle"></h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Period 1<br>9:00–10:00</th>
+                            <th>Period 2<br>10:00–11:00</th>
+                            <th>Period 3<br>11:00–12:00</th>
+                            <th>Period 4<br>12:00–1:00</th>
+                            <th>Period 5<br>2:00–3:00</th>
+                            <th>Period 6<br>3:00–4:00</th>
+                        </tr>
+                    </thead>
+                    <tbody id="timetableBody">
+                        <!-- Rows will be generated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATIONS SECTION -->
+    <div id="notificationsSection" style="display:none;">
+        <h1>Notifications</h1>
+        <div id="notificationsList"></div>
+
+        <div class="card" style="text-align:center;">
+            <h3>Send Notification to Teachers</h3>
+            <input type="text" id="hodMessage" placeholder="Enter message here" style="width:80%;padding:10px;margin-top:10px;">
+            <br>
+            <button class="send-btn" onclick="sendNotification()">Send</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+let notifications = ["Welcome to HOD Dashboard!"];
+let timetableData = {}; // store subjects for each class
+
+function showDashboard() {
+    hideAllSections();
+    document.getElementById("dashboardSection").style.display = "block";
+}
+
+function showTimetable() {
+    hideAllSections();
+    document.getElementById("timetableSection").style.display = "block";
+}
+
+function showNotifications() {
+    hideAllSections();
+    document.getElementById("notificationsSection").style.display = "block";
+    renderNotifications();
+}
+
+function hideAllSections() {
+    document.getElementById("dashboardSection").style.display = "none";
+    document.getElementById("timetableSection").style.display = "none";
+    document.getElementById("notificationsSection").style.display = "none";
+}
+
+function renderNotifications() {
+    const list = document.getElementById("notificationsList");
+    list.innerHTML = "";
+    notifications.forEach(note => {
+        const div = document.createElement("div");
+        div.className = "notification";
+        div.textContent = note;
+        list.appendChild(div);
+    });
+}
+
+function sendNotification() {
+    const messageInput = document.getElementById("hodMessage");
+    if(messageInput.value.trim() === "") {
+        alert("Please enter a message.");
+        return;
+    }
+    notifications.push("HOD: " + messageInput.value);
+    messageInput.value = "";
+    renderNotifications();
+    alert("Notification sent to teachers!");
+}
+
+// --- Timetable Functions ---
+function showClassButtons() {
+    document.getElementById("classButtons").style.display = "block";
+    document.getElementById("timetableTable").style.display = "none";
+}
+
+function showClassTimetable(className) {
+    document.getElementById("timetableTable").style.display = "block";
+    document.getElementById("timetableTitle").textContent = "Timetable for " + className;
+
+    const tbody = document.getElementById("timetableBody");
+    tbody.innerHTML = "";
+
+    const days = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
+    for(let i=0; i<days.length; i++){
+        const tr = document.createElement("tr");
+        const tdDay = document.createElement("td");
+        tdDay.innerHTML = "<b>"+days[i]+"</b>";
+        tr.appendChild(tdDay);
+
+        for(let p=1; p<=6; p++){
+            const tdPeriod = document.createElement("td");
+            const subject = (timetableData[className] && timetableData[className][days[i]] && timetableData[className][days[i]][p]) || "";
+            tdPeriod.innerHTML = subject + "<br><button class='period-btn' onclick='editSubject(\""+className+"\",\""+days[i]+"\","+p+")'>Add/Edit</button>";
+            tr.appendChild(tdPeriod);
+        }
+
+        tbody.appendChild(tr);
+    }
+}
+
+function editSubject(className, day, period) {
+    const currentSubject = (timetableData[className] && timetableData[className][day] && timetableData[className][day][period]) || "";
+    const newSubject = prompt("Enter subject for " + className + " - " + day + " Period " + period, currentSubject);
+    if(newSubject !== null){
+        if(!timetableData[className]) timetableData[className] = {};
+        if(!timetableData[className][day]) timetableData[className][day] = {};
+        timetableData[className][day][period] = newSubject;
+        showClassTimetable(className);
+    }
+}
+</script>
+
+</body>
+</html>

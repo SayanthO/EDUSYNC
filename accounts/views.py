@@ -1,25 +1,25 @@
+# accounts/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import CustomUser
 
+# Welcome page
 def welcome_page(request):
     return render(request, 'accounts/welcome.html')
 
-
+# Login view
 def login_view(request):
     if request.method == "POST":
         reg_no = request.POST.get("registernumber")
         password = request.POST.get("password")
 
-        # authenticate still uses username internally
         user = authenticate(request, username=reg_no, password=password)
 
         if user is not None:
             login(request, user)
-
-            # 🔥 ROLE BASED REDIRECT
+            # Role-based redirect
             if user.role == "student":
                 return redirect("student_dashboard")
             elif user.role == "teacher":
@@ -32,10 +32,13 @@ def login_view(request):
             messages.error(request, "Invalid Register Number or Password")
 
     return render(request, "accounts/login.html")
+
+# Logout
 def logout_view(request):
     logout(request)
     return redirect('login')
 
+# Signup pages
 def signup_role(request):
     return render(request, 'accounts/signup_role.html')
 
@@ -126,6 +129,7 @@ def signup_hod(request):
 
     return render(request, 'accounts/signup_hod.html')
 
+# Dashboards
 @login_required(login_url="login")
 def student_dashboard(request):
     return render(request, "accounts/student_dashboard.html")
@@ -134,6 +138,6 @@ def student_dashboard(request):
 def teacher_dashboard(request):
     return render(request, "accounts/teacher_dashboard.html")
 
-@login_required
+@login_required(login_url="login")
 def hod_dashboard(request):
     return render(request, 'accounts/hod_dashboard.html')

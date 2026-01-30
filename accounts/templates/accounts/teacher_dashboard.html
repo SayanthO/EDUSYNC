@@ -52,8 +52,45 @@
             margin-bottom: 20px;
         }
 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        th {
+            background: #eef2ff;
+        }
+
         h1 {
             color: #1f2937;
+        }
+
+        .upload-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4f46e5;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .upload-btn:hover {
+            background-color: #4338ca;
+        }
+
+        .notification {
+            background-color: #eef2ff;
+            border-left: 5px solid #4f46e5;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -61,39 +98,207 @@
 
 <div class="sidebar">
     <h2>Teacher Dashboard</h2>
-    <a href="#">Dashboard</a>
-    <a href="#">My Classes</a>
-    <a href="#">Timetable</a>
-    <a href="#">Assignments</a>
-    <a href="#">Notifications</a>
+    <a href="#" onclick="showDashboard()">My Classes</a>
+    <a href="#" onclick="showTimetable()">Timetable</a>
+    <a href="#" onclick="showAssignments()">Assignments</a>
+    <a href="#" onclick="showNotifications()">Notifications</a>
     <a href="{% url 'logout' %}">Logout</a>
 </div>
 
 <div class="main">
-    <h1>Welcome, {{ user.username }}</h1>
 
-    <div class="card">
-        <h3>Today's Schedule</h3>
-        <p>No classes scheduled for today</p>
+    <!-- DASHBOARD CONTENT -->
+    <div id="dashboardSection">
+        <h1>Welcome, {{ user.first_name }}</h1>
+
+        <div class="card">
+            <h3>Today's Schedule</h3>
+            <p>No classes scheduled for today</p>
+        </div>
+
+        <div class="card">
+            <h3>My Subjects</h3>
+            <ul>
+                <li>Computer Science</li>
+                <li>Data Structures</li>
+                <li>Operating Systems</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>Pending Tasks</h3>
+            <ul>
+                <li>Upload Assignment for CS101</li>
+                <li>Review Student Submissions</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>My Subjects</h3>
-        <ul>
-            <li>Computer Science</li>
-            <li>Data Structures</li>
-            <li>Operating Systems</li>
-        </ul>
+    <!-- TIMETABLE SECTION -->
+    <div id="timetableSection" style="display:none;">
+        <h1>Weekly Timetable</h1>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Period 1<br>9:00–10:00</th>
+                        <th>Period 2<br>10:00–11:00</th>
+                        <th>Period 3<br>11:00–12:00</th>
+                        <th>Period 4<br>12:00–1:00</th>
+                        <th>Period 5<br>2:00–3:00</th>
+                        <th>Period 6<br>3:00–4:00</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Monday</b></td>
+                        <td>CS101</td>
+                        <td>DS</td>
+                        <td>OS</td>
+                        <td>Free</td>
+                        <td>CS Lab</td>
+                        <td>Seminar</td>
+                    </tr>
+                    <tr>
+                        <td><b>Tuesday</b></td>
+                        <td>DS</td>
+                        <td>OS</td>
+                        <td>CS101</td>
+                        <td>Free</td>
+                        <td>Project</td>
+                        <td>Mentoring</td>
+                    </tr>
+                    <tr>
+                        <td><b>Wednesday</b></td>
+                        <td>OS</td>
+                        <td>CS101</td>
+                        <td>DS</td>
+                        <td>Free</td>
+                        <td>Lab</td>
+                        <td>Review</td>
+                    </tr>
+                    <tr>
+                        <td><b>Thursday</b></td>
+                        <td>CS101</td>
+                        <td>DS</td>
+                        <td>OS</td>
+                        <td>Free</td>
+                        <td>CS Lab</td>
+                        <td>Admin</td>
+                    </tr>
+                    <tr>
+                        <td><b>Friday</b></td>
+                        <td>DS</td>
+                        <td>OS</td>
+                        <td>CS101</td>
+                        <td>Free</td>
+                        <td>Project</td>
+                        <td>Meeting</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>Pending Tasks</h3>
-        <ul>
-            <li>Upload Assignment for CS101</li>
-            <li>Review Student Submissions</li>
-        </ul>
+    <!-- ASSIGNMENTS SECTION -->
+    <div id="assignmentsSection" style="display:none;">
+        <h1>Assignments</h1>
+
+        <div class="card" style="text-align:center;">
+            <h3>Upload Assignment Question (PDF)</h3>
+            <input type="file" accept="application/pdf" id="uploadQn">
+            <br>
+            <button class="upload-btn" onclick="uploadQuestion()">Upload PDF</button>
+        </div>
+
+        <div class="card" style="text-align:center;">
+            <h3>View Student Submissions</h3>
+            <button class="upload-btn" onclick="viewSubmissions()">View PDFs</button>
+        </div>
     </div>
+
+    <!-- NOTIFICATIONS SECTION -->
+    <div id="notificationsSection" style="display:none;">
+        <h1>Notifications</h1>
+        <div id="notificationsList">
+            <!-- Notifications will appear here -->
+        </div>
+    </div>
+
 </div>
+
+<script>
+let notifications = [
+    "HOD: Today you have class due to the absence of another teacher."
+];
+
+// Simulate student submissions
+let studentSubmissions = [];
+
+function showTimetable() {
+    hideAllSections();
+    document.getElementById("timetableSection").style.display = "block";
+}
+
+function showDashboard() {
+    hideAllSections();
+    document.getElementById("dashboardSection").style.display = "block";
+}
+
+function showAssignments() {
+    hideAllSections();
+    document.getElementById("assignmentsSection").style.display = "block";
+}
+
+function showNotifications() {
+    hideAllSections();
+    document.getElementById("notificationsSection").style.display = "block";
+    renderNotifications();
+}
+
+function hideAllSections() {
+    document.getElementById("dashboardSection").style.display = "none";
+    document.getElementById("timetableSection").style.display = "none";
+    document.getElementById("assignmentsSection").style.display = "none";
+    document.getElementById("notificationsSection").style.display = "none";
+}
+
+function uploadQuestion() {
+    const fileInput = document.getElementById("uploadQn");
+    if(fileInput.files.length === 0){
+        alert("Please select a PDF to upload.");
+        return;
+    }
+    const fileName = fileInput.files[0].name;
+    alert("Assignment question uploaded: " + fileName);
+
+    // Add notification for students (simulate)
+    studentSubmissions.push("Student submission available for: " + fileName);
+    notifications.push("Teacher uploaded a new assignment: " + fileName);
+    renderNotifications();
+}
+
+function viewSubmissions() {
+    alert("Viewing student submissions...");
+    if(studentSubmissions.length === 0){
+        alert("No student submissions yet.");
+    } else {
+        alert(studentSubmissions.join("\n"));
+    }
+}
+
+function renderNotifications() {
+    const list = document.getElementById("notificationsList");
+    list.innerHTML = "";
+    notifications.forEach(note => {
+        const div = document.createElement("div");
+        div.className = "notification";
+        div.textContent = note;
+        list.appendChild(div);
+    });
+}
+</script>
 
 </body>
 </html>
