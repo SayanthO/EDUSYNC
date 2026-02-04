@@ -3,14 +3,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import CustomUser, ClassTimetable
+from django.http import HttpResponse
+from .models import CustomUser, ClassTimetable, Notification
 
-# --- Welcome page ---
+
 def welcome_page(request):
     return render(request, 'accounts/welcome.html')
 
 
-# --- Login view ---
 def login_view(request):
     if request.method == "POST":
         reg_no = request.POST.get("registernumber")
@@ -20,7 +20,6 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            # Role-based redirect
             if user.role == "student":
                 return redirect("student_dashboard")
             elif user.role == "teacher":
@@ -35,27 +34,23 @@ def login_view(request):
     return render(request, "accounts/login.html")
 
 
-# --- Logout ---
 def logout_view(request):
     logout(request)
     return redirect('login')
 
 
-# --- Signup pages ---
 def signup_role(request):
     return render(request, 'accounts/signup_role.html')
 
 
-# --- Student signup ---
 def signup_student(request):
-    from .models import CustomUser
     if request.method == "POST":
         full_name = request.POST['full_name']
         reg_no = request.POST['reg_no']
         email = request.POST['email']
         password = request.POST['password']
         confirm = request.POST['confirm']
-        student_class = request.POST.get('student_class')  # Class selection
+        student_class = request.POST.get('student_class')
 
         if password != confirm:
             messages.error(request, "Passwords do not match!")
@@ -80,7 +75,6 @@ def signup_student(request):
     return render(request, 'accounts/signup_student.html')
 
 
-# --- Teacher signup ---
 def signup_teacher(request):
     if request.method == "POST":
         full_name = request.POST['full_name']
@@ -97,7 +91,7 @@ def signup_teacher(request):
             messages.error(request, "Staff ID already exists!")
             return redirect('signup_teacher')
 
-        user = CustomUser.objects.create_user(
+        CustomUser.objects.create_user(
             username=staff_id,
             first_name=full_name,
             email=email,
@@ -111,7 +105,6 @@ def signup_teacher(request):
     return render(request, 'accounts/signup_teacher.html')
 
 
-# --- HOD signup ---
 def signup_hod(request):
     if request.method == "POST":
         full_name = request.POST['full_name']
@@ -128,7 +121,7 @@ def signup_hod(request):
             messages.error(request, "HOD ID already exists!")
             return redirect('signup_hod')
 
-        user = CustomUser.objects.create_user(
+        CustomUser.objects.create_user(
             username=hod_id,
             first_name=full_name,
             email=email,
@@ -142,29 +135,61 @@ def signup_hod(request):
     return render(request, 'accounts/signup_hod.html')
 
 
-# --- Dashboards ---
 @login_required(login_url="login")
 def student_dashboard(request):
-    from .models import ClassTimetable
     timetable = None
     if request.user.student_class:
         timetable = ClassTimetable.objects.filter(class_name=request.user.student_class)
-    context = {
-        "timetable": timetable
-    }
-    return render(request, "accounts/student_dashboard.html", context)
+    return render(request, "accounts/student_dashboard.html", {"user": request.user, "timetable": timetable})
 
 
 @login_required(login_url="login")
 def teacher_dashboard(request):
-    return render(request, "accounts/teacher_dashboard.html")
+    notifications = Notification.objects.filter(receiver=request.user).order_by('-created_at')
+    return render(request, "accounts/teacher_dashboard.html", {
+        "user": request.user,
+        "notifications": notifications
+    })
 
 
 @login_required(login_url="login")
 def hod_dashboard(request):
-    from .models import ClassTimetable
     timetable = ClassTimetable.objects.all()
-    context = {
-        "timetable": timetable
-    }
-    return render(request, 'accounts/hod_dashboard.html', context)
+    notifications = Notification.objects.filter(sender=request.user).order_by('-created_at')
+    return render(request, 'accounts/hod_dashboard.html', {
+        "timetable": timetable,
+        "notifications": notifications
+    })
+
+
+@login_required(login_url="login")
+def send_hod_notification(request):
+    if request.method == "POST":
+        message = request.POST.get("message")
+        teacher_id = request.POST.get("teacher_id")
+
+        if teacher_id == "all":
+            teachers = CustomUser.objects.filter(role="teacher")
+            for teacher in teachers:
+                Notification.objects.create(
+                    sender=request.user,
+                    receiver=teacher,
+                    message=message
+                )
+        else:
+            teacher = CustomUser.objects.get(id=teacher_id)
+            Notification.objects.create(
+                sender=request.user,
+                receiver=teacher,
+                message=message
+            )
+
+        messages.success(request, "Notification sent successfully!")
+        return redirect("hod_dashboard")
+
+    teachers = CustomUser.objects.filter(role="teacher")
+    return render(request, "accounts/hod_send_notification.html", {"teachers": teachers})
+
+
+def hod_timetable_save(request):
+    return HttpResponse("HOD Timetable Save View Working")

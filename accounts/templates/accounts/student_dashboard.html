@@ -96,6 +96,14 @@
         .download-btn:hover {
             background-color: #059669;
         }
+
+        .notification {
+            background-color: #eef2ff;
+            border-left: 5px solid #4f46e5;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -117,7 +125,7 @@
 
         <div class="card">
             <h3>Profile Info</h3>
-            <p>Name: {{ user.first_name }}</p>
+            <p>Name: {{ user.first_name }} {{ user.last_name }}</p>
             <p>Register No: {{ user.reg_no }}</p>
             <p>Class: {{ user_class }}</p>
         </div>
@@ -140,14 +148,51 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for day, periods in timetable.items %}
                     <tr>
-                        <td><b>{{ day }}</b></td>
-                        {% for i in "123456" %}
-                        <td>{{ periods|get_item:i|default:"Free" }}</td>
-                        {% endfor %}
+                        <td><b>Monday</b></td>
+                        <td>Math</td>
+                        <td>Physics</td>
+                        <td>Chemistry</td>
+                        <td>English</td>
+                        <td>Biology</td>
+                        <td>History</td>
                     </tr>
-                    {% endfor %}
+                    <tr>
+                        <td><b>Tuesday</b></td>
+                        <td>English</td>
+                        <td>Math</td>
+                        <td>Computer</td>
+                        <td>Physics</td>
+                        <td>Chemistry</td>
+                        <td>PE</td>
+                    </tr>
+                    <tr>
+                        <td><b>Wednesday</b></td>
+                        <td>Biology</td>
+                        <td>Math</td>
+                        <td>History</td>
+                        <td>English</td>
+                        <td>Physics</td>
+                        <td>Computer</td>
+                    </tr>
+                    <tr>
+                        <td><b>Thursday</b></td>
+                        <td>Chemistry</td>
+                        <td>Biology</td>
+                        <td>Math</td>
+                        <td>History</td>
+                        <td>English</td>
+                        <td>Physics</td>
+                    </tr>
+                    <tr>
+                        <td><b>Friday</b></td>
+                        <td>PE</td>
+                        <td>Computer</td>
+                        <td>Math</td>
+                        <td>English</td>
+                        <td>Physics</td>
+                        <td>Chemistry</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -186,31 +231,30 @@
 
 <script>
 function showDashboard() {
+    hideAllSections();
     document.getElementById("dashboardSection").style.display = "block";
-    document.getElementById("timetableSection").style.display = "none";
-    document.getElementById("assignmentsSection").style.display = "none";
-    document.getElementById("notificationsSection").style.display = "none";
 }
 
 function showTimetable() {
-    document.getElementById("dashboardSection").style.display = "none";
+    hideAllSections();
     document.getElementById("timetableSection").style.display = "block";
-    document.getElementById("assignmentsSection").style.display = "none";
-    document.getElementById("notificationsSection").style.display = "none";
 }
 
 function showAssignments() {
-    document.getElementById("dashboardSection").style.display = "none";
-    document.getElementById("timetableSection").style.display = "none";
+    hideAllSections();
     document.getElementById("assignmentsSection").style.display = "block";
-    document.getElementById("notificationsSection").style.display = "none";
 }
 
 function showNotifications() {
+    hideAllSections();
+    document.getElementById("notificationsSection").style.display = "block";
+}
+
+function hideAllSections() {
     document.getElementById("dashboardSection").style.display = "none";
     document.getElementById("timetableSection").style.display = "none";
     document.getElementById("assignmentsSection").style.display = "none";
-    document.getElementById("notificationsSection").style.display = "block";
+    document.getElementById("notificationsSection").style.display = "none";
 }
 
 function uploadAssignment() {
@@ -222,7 +266,6 @@ function uploadAssignment() {
     const fileName = fileInput.files[0].name;
     alert("Assignment uploaded: " + fileName);
 
-    // Add notification for student
     const notificationsList = document.getElementById("notificationsList");
     const newNotification = document.createElement("li");
     newNotification.textContent = "You have successfully submitted: " + fileName;

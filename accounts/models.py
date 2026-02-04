@@ -18,8 +18,10 @@ CLASS_CHOICES = [
     ('CPS6', 'CPS6'),
 ]
 
-DAYS_OF_WEEK = ["Monday","Tuesday","Wednesday","Thursday","Friday"]
+DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 
+
+# Custom user model
 class CustomUser(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True, blank=True)
     reg_no = models.CharField(max_length=20, unique=True, null=True, blank=True)
@@ -29,7 +31,8 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
-# HOD Timetable model for each class
+
+# Timetable model (5 days, 6 periods)
 class ClassTimetable(models.Model):
     class_name = models.CharField(max_length=10, choices=CLASS_CHOICES)
     day = models.CharField(max_length=10, choices=[(d, d) for d in DAYS_OF_WEEK])
@@ -42,3 +45,18 @@ class ClassTimetable(models.Model):
 
     def __str__(self):
         return f"{self.class_name} - {self.day}"
+
+
+# Notification model (HOD → Teachers, etc.)
+class Notification(models.Model):
+    sender = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="sent_notifications"
+    )
+    receiver = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="received_notifications"
+    )
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"From {self.sender.username} to {self.receiver.username}"
